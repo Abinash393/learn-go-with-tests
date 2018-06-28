@@ -8,7 +8,7 @@ install: true
 stages:
   - build
   - spelling
-  - markdownlint
+    # - markdownlint
 
 jobs:
   include:
