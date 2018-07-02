@@ -2,9 +2,9 @@
 
 **[你可以在这里找到本章的所有代码](https://github.com/quii/learn-go-with-tests/tree/master/json)**
 
-在上一章中，我们创建了一个 web 服务器用来储存多少玩家赢了（游戏）。
+在[上一章](http-server.md)中，我们创建了一个 web 服务器用来储存多少玩家赢了（游戏）。
 
-我们的项目负责人有个新的需求，要求有一个叫 `/league`（联盟）的新的端点，它可以返回一个玩家清单。她想让它返回一个 JSON 格式的数据。
+我们的项目负责人有个新的需求，要求有一个叫 `/league`（联盟）的新的端点（endpoint），它可以返回一个玩家清单。她想让它返回一个 JSON 格式的数据。
 
 ## 这是我们目前已有的代码
 
@@ -176,7 +176,7 @@ func (p *PlayerServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 - 当请求开始时，我们创建了一个路由，然后我们告诉它 `x` 路径使用 `y` handler。
 - 那么对于我们的新端点 `/league` 被请求时，我们用 `http.HandlerFunc` 和一个匿名函数来响应 `w.WriteHeader(http.StatusOK)` 使测试通过。
 - 对于 `/players/` 路由我们只需剪贴代码并粘贴到另一个 `http.HandlerFunc`。
-- 最终，我们通过调用新路由的 `ServeHTTP` 方法处理了的请求（注意到 `ServeMux` 也是一个 `http.Handler` 了吗？）
+- 最终，我们通过调用新路由的 `ServeHTTP` 方法处理到来的请求（注意到 `ServeMux` 也是一个 `http.Handler` 了吗？）
 
 现在测试应该可以通过了。
 
@@ -268,9 +268,9 @@ func NewPlayerServer(store PlayerStore) *PlayerServer {
 
 ## 嵌入
 
-我们更改了 `PlayerServer` 的第二个属性，删除了命名属性`router http.ServeMux`，并用 `http.Handler` 替换了它；这被称为 _嵌入_。
+我们更改了 `PlayerServer` 的第二个属性，删除了命名属性 `router http.ServeMux`，并用 `http.Handler` 替换了它；这被称为 _嵌入_。
 
-> Go 没有提供典型的，类型驱动的子类化概念，但它具有通过在结构或接口中嵌入类型来“借用”实现的能力。
+> Go 没有提供典型的，类型驱动的子类化概念，但它具有通过在结构或接口中嵌入类型来“借用”一部分实现的能力。
 
 [高效 Go - 嵌入](https://golang.org/doc/effective_go.html#embedding)
 
@@ -295,7 +295,7 @@ type Animal interface {
 
 你必须小心使用嵌入类型，因为你将公开所有嵌入类型的公共方法和字段。在我们的例子中它是可以的，因为我们只是嵌入了 `http.Handler` 这个 _接口_。
 
-如果我们懒一点，嵌入了 `http.ServeMux`（混合类型），它仍然可以工作 _但_ `PlayerServer` 的用户就可以给我们的服务器添加新路由了，因为 `Handle)path, handler)` 会公开。
+如果我们懒一点，嵌入了 `http.ServeMux`（混合类型），它仍然可以工作 _但_ `PlayerServer` 的用户就可以给我们的服务器添加新路由了，因为 `Handle(path, handler)` 会公开。
 
 **嵌入类型时，真正要考虑的是对你公开的 API 有什么影响。**
 
